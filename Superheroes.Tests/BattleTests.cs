@@ -7,6 +7,9 @@ using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using Superheroes.DataProvider;
+using System.Collections.Generic;
+using Superheroes.Domain.Entities;
 
 namespace Superheroes.Tests
 {
@@ -19,29 +22,26 @@ namespace Superheroes.Tests
 
             var startup = new WebHostBuilder()
                             .UseStartup<Startup>()
-                            .ConfigureServices(x => 
+                            .ConfigureServices(x =>
                             {
-                                x.AddSingleton<ICharactersProvider>(charactersProvider);
+                                x.AddSingleton<ICharacterProvider>(charactersProvider);
                             });
             var testServer = new TestServer(startup);
             var client = testServer.CreateClient();
 
-            charactersProvider.FakeResponse(new CharactersResponse
+            charactersProvider.FakeResponse(new List<Character>
             {
-                Items = new []
+                new Character
                 {
-                    new CharacterResponse
-                    {
-                        Name = "Batman",
-                        Score = 8.3,
-                        Type = "hero"
-                    },
-                    new CharacterResponse
-                    {
-                        Name = "Joker",
-                        Score = 8.2,
-                        Type = "villain"
-                    }
+                    Name = "Batman",
+                    Score = 8.3,
+                    Type = "hero"
+                },
+                new Character
+                {
+                    Name = "Joker",
+                    Score = 8.2,
+                    Type = "villain"
                 }
             });
 
