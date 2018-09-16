@@ -48,7 +48,7 @@ namespace Superheroes.Handler
 
         Character Battle(Character hero, Character villain)
         {
-            if (hero.Weakness != null && hero.Weakness.Name == villain.Name)
+            if (!string.IsNullOrEmpty(hero.Weakness) && hero.Weakness == villain.Name)
             {
                 hero.Score -= 1.0;
             }

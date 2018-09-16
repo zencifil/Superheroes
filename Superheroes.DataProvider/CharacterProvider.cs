@@ -20,8 +20,12 @@ namespace Superheroes.DataProvider
 
         public async Task<Character> GetCharacter(string name)
         {
-            var characters = await GetCharacters();
-            return characters.First(c => c.Name == name);
+            var response = await _client.GetAsync(CharactersUri);
+
+            var responseJson = await response.Content.ReadAsStringAsync();
+            var characterResponse = JsonConvert.DeserializeObject<CharacterResponse>(responseJson);
+
+            return characterResponse.Items.First(c => c.Name == name);
         }
 
         public async Task<IEnumerable<Character>> GetCharacters()
@@ -29,7 +33,9 @@ namespace Superheroes.DataProvider
             var response = await _client.GetAsync(CharactersUri);
 
             var responseJson = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<Character>>(responseJson);
+            var characterResponse = JsonConvert.DeserializeObject<CharacterResponse>(responseJson);
+
+            return characterResponse.Items;
         }
     }
 }
