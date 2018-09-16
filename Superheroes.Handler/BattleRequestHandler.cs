@@ -34,8 +34,14 @@ namespace Superheroes.Handler
                     return await Task.FromResult<IActionResult>(badRequest);
                 }
 
-                var hero = await _characterProvider.GetCharacter(request.Hero);
-                var villain = await _characterProvider.GetCharacter(request.Villain);
+                var hero = await _characterProvider.GetCharacter(request.Hero, "hero");
+                if (hero == null)
+                    return await Task.FromResult<IActionResult>(new BadRequestObjectResult("The hero you're looking for could not be found!"));
+
+                var villain = await _characterProvider.GetCharacter(request.Villain, "villain");
+                if (villain == null)
+                    return await Task.FromResult<IActionResult>(new BadRequestObjectResult("The villain you're looking for could not be found!"));
+
                 var winner = Battle(hero, villain);
 
                 return await Task.FromResult<IActionResult>(new OkObjectResult(winner));
@@ -49,12 +55,11 @@ namespace Superheroes.Handler
         Character Battle(Character hero, Character villain)
         {
             if (!string.IsNullOrEmpty(hero.Weakness) && hero.Weakness == villain.Name)
-            {
                 hero.Score -= 1.0;
-            }
 
             //for goodness sake, if the scores are equal hero wins...
             var winner = hero.Score >= villain.Score ? hero : villain;
+            hero.Score += 1.0;
             return winner;
         }
     }
