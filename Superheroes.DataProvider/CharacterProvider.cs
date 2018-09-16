@@ -17,15 +17,13 @@ namespace Superheroes.DataProvider
     {
         const string CharactersUri = "https://s3.eu-west-2.amazonaws.com/build-circle/characters.json";
         readonly HttpClient _client = new HttpClient();
+        IEnumerable<Character> _characters;
 
         public async Task<Character> GetCharacter(string name)
         {
-            var response = await _client.GetAsync(CharactersUri);
-
-            var responseJson = await response.Content.ReadAsStringAsync();
-            var characterResponse = JsonConvert.DeserializeObject<CharacterResponse>(responseJson);
-
-            return characterResponse.Items.First(c => c.Name == name);
+            if (_characters == null)
+                _characters = await GetCharacters();
+            return _characters.First(c => c.Name == name);
         }
 
         public async Task<IEnumerable<Character>> GetCharacters()
