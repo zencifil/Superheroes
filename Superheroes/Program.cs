@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore;
+﻿using FluentValidation;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Superheroes.Contracts.Request;
+using Superheroes.DataProvider;
+using Superheroes.Handler;
+using Superheroes.Validator;
 
 namespace Superheroes
 {
@@ -16,7 +21,9 @@ namespace Superheroes
                 .UseStartup<Startup>()
                 .ConfigureServices(x => 
                 {
-                    x.AddSingleton<ICharactersProvider, CharactersProvider>();
+                    x.AddSingleton<ICharacterProvider, CharacterProvider>();
+                    x.AddSingleton<IValidator, BattleRequestValidator>();
+                    x.AddScoped<IHandler<BattleRequest>, BattleRequestHandler>();
                 });
     }
 }

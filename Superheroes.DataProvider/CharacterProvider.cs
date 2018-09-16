@@ -9,7 +9,7 @@ namespace Superheroes.DataProvider
 {
     public interface ICharacterProvider
     {
-        Task<Character> GetCharacter(string name);
+        Task<Character> GetCharacter(string name, string type);
         Task<IEnumerable<Character>> GetCharacters();
     }
 
@@ -17,11 +17,13 @@ namespace Superheroes.DataProvider
     {
         const string CharactersUri = "https://s3.eu-west-2.amazonaws.com/build-circle/characters.json";
         readonly HttpClient _client = new HttpClient();
+        IEnumerable<Character> _characters;
 
-        public async Task<Character> GetCharacter(string name)
+        public async Task<Character> GetCharacter(string name, string type)
         {
-            var characters = await GetCharacters();
-            return characters.First(c => c.Name == name);
+            if (_characters == null)
+                _characters = await GetCharacters();
+            return _characters.FirstOrDefault(c => c.Name == name && c.Type == type);
         }
 
         public async Task<IEnumerable<Character>> GetCharacters()
@@ -29,7 +31,9 @@ namespace Superheroes.DataProvider
             var response = await _client.GetAsync(CharactersUri);
 
             var responseJson = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IEnumerable<Character>>(responseJson);
+            var characterResponse = JsonConvert.DeserializeObject<CharacterResponse>(responseJson);
+
+            return characterResponse.Items;
         }
     }
 }

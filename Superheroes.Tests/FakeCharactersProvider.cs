@@ -1,19 +1,28 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Superheroes.DataProvider;
+using Superheroes.Domain.Entities;
 
 namespace Superheroes.Tests
 {
-    public class FakeCharactersProvider : ICharactersProvider
+    public class FakeCharactersProvider : ICharacterProvider
     {
-        CharactersResponse _response;
+        IEnumerable<Character> _characters;
         
-        public void FakeResponse(CharactersResponse response)
+        public void FakeResponse(IEnumerable<Character> characters)
         {
-            _response = response;
+            _characters = characters;
         }
 
-        public Task<CharactersResponse> GetCharacters()
+        public Task<Character> GetCharacter(string name, string type)
         {
-            return Task.FromResult(_response);
+            return Task.FromResult(_characters.First(c => c.Name == name && c.Type == type));
+        }
+
+        public Task<IEnumerable<Character>> GetCharacters()
+        {
+            return Task.FromResult(_characters);
         }
     }
 }
