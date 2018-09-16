@@ -9,7 +9,7 @@ namespace Superheroes.DataProvider
 {
     public interface ICharacterProvider
     {
-        Task<Character> GetCharacter(string name);
+        Task<Character> GetCharacter(string name, string type);
         Task<IEnumerable<Character>> GetCharacters();
     }
 
@@ -19,11 +19,11 @@ namespace Superheroes.DataProvider
         readonly HttpClient _client = new HttpClient();
         IEnumerable<Character> _characters;
 
-        public async Task<Character> GetCharacter(string name)
+        public async Task<Character> GetCharacter(string name, string type)
         {
             if (_characters == null)
                 _characters = await GetCharacters();
-            return _characters.First(c => c.Name == name);
+            return _characters.FirstOrDefault(c => c.Name == name && c.Type == type);
         }
 
         public async Task<IEnumerable<Character>> GetCharacters()

@@ -15,9 +15,9 @@ namespace Superheroes.Tests
             _characters = characters;
         }
 
-        public Task<Character> GetCharacter(string name)
+        public Task<Character> GetCharacter(string name, string type)
         {
-            return Task.FromResult(_characters.First(c => c.Name == name));
+            return Task.FromResult(_characters.First(c => c.Name == name && c.Type == type));
         }
 
         public Task<IEnumerable<Character>> GetCharacters()
