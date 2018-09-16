@@ -11,6 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Superheroes.Contracts\Superheroes.Contracts.csproj" />
+    <ProjectReference Include="..\Superheroes.DataProvider\Superheroes.DataProvider.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="8.0.100" />

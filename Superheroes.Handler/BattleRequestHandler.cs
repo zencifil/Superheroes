@@ -2,6 +2,8 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Superheroes.Contracts.Request;
+using Superheroes.DataProvider;
+using Superheroes.Domain.Entities;
 
 namespace Superheroes.Handler
 {
@@ -12,14 +14,16 @@ namespace Superheroes.Handler
 
     public class BattleRequestHandler : IHandler<BattleRequest>
     {
-        private readonly IValidator _validator;
+        readonly IValidator _validator;
+        readonly ICharacterProvider _characterProvider;
 
-        public BattleRequestHandler(IValidator validator)
+        public BattleRequestHandler(IValidator validator, ICharacterProvider characterProvider)
         {
             _validator = validator;
+            _characterProvider = characterProvider;
         }
 
-        public Task<IActionResult> HandleAsync(BattleRequest request)
+        public async Task<IActionResult> HandleAsync(BattleRequest request)
         {
             try
             {
@@ -27,17 +31,31 @@ namespace Superheroes.Handler
                 if (validationResult.Errors != null && validationResult.Errors.Count > 0)
                 {
                     var badRequest = new BadRequestObjectResult(validationResult.Errors);
-                    return Task.FromResult<IActionResult>(badRequest);
+                    return await Task.FromResult<IActionResult>(badRequest);
                 }
 
-                //TODO add data provider and do actual job
-                var winner = "";
-                return Task.FromResult<IActionResult>(new OkObjectResult(winner));
+                var hero = await _characterProvider.GetCharacter(request.Hero);
+                var villain = await _characterProvider.GetCharacter(request.Villain);
+                var winner = Battle(hero, villain);
+
+                return await Task.FromResult<IActionResult>(new OkObjectResult(winner));
             }
             catch (System.Exception ex)
             {
-                return Task.FromException<IActionResult>(ex);
+                return await Task.FromException<IActionResult>(ex);
             }
+        }
+
+        Character Battle(Character hero, Character villain)
+        {
+            if (hero.Weakness != null && hero.Weakness.Name == villain.Name)
+            {
+                hero.Score -= 1.0;
+            }
+
+            //for goodness sake, if the scores are equal hero wins...
+            var winner = hero.Score >= villain.Score ? hero : villain;
+            return winner;
         }
     }
 }
