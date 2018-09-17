@@ -17,7 +17,7 @@ namespace Superheroes.Tests
 
         public Task<Character> GetCharacter(string name, string type)
         {
-            return Task.FromResult(_characters.First(c => c.Name == name && c.Type == type));
+            return Task.FromResult(_characters.FirstOrDefault(c => c.Name == name && c.Type == type));
         }
 
         public Task<IEnumerable<Character>> GetCharacters()

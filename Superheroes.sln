@@ -115,4 +115,6 @@ Global
 		{76ADE7C7-68B6-44DF-B1D2-76C7D1E4A160}.Release|x86.ActiveCfg = Release|Any CPU
 		{76ADE7C7-68B6-44DF-B1D2-76C7D1E4A160}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
 EndGlobal

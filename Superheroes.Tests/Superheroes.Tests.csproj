@@ -15,4 +15,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Superheroes\Superheroes.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Superheroes.Handler.Test\UnitTest1.cs" />
+    <Compile Remove="Superheroes.Handler.Test\BattleRequestHandlerShould.cs" />
+  </ItemGroup>
 </Project>
