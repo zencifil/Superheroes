@@ -59,7 +59,11 @@ namespace Superheroes.Handler
 
             //for goodness sake, if the scores are equal hero wins...
             var winner = hero.Score >= villain.Score ? hero : villain;
-            hero.Score += 1.0;
+
+            //since we're using in-memory db, we need to heal our superhero...
+            if (!string.IsNullOrEmpty(hero.Weakness) && hero.Weakness == villain.Name)
+                hero.Score += 1.0;
+
             return winner;
         }
     }
